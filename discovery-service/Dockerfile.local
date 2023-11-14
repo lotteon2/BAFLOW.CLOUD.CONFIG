@@ -1,0 +1,16 @@
+FROM adoptopenjdk:11-hotspot AS builder
+ARG service=discovery-service
+ENV USE_PROFILE local
+
+COPY $service/gradlew .
+COPY $service/gradle gradle
+COPY $service/build.gradle .
+COPY $service/settings.gradle .
+COPY $service/src src
+RUN chmod +x ./gradlew
+RUN ./gradlew clean bootJar
+
+FROM adoptopenjdk:11-hotspot
+COPY --from=builder build/libs/*.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=${USE_PROFILE}", "/app.jar"]
