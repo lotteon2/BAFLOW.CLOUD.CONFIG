@@ -1,0 +1,18 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: discovery-service
+  config:
+    activate:
+      on-profile: local, dev, prod
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    registryFetchIntervalSeconds: 60
+  instance:
+    leaseRenewalIntervalInSeconds: 30
+  server:
+    enableSelfPreservation: true
+    renewalPercentThreshold: 90
