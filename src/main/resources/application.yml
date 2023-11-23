@@ -10,9 +10,8 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
-    registryFetchIntervalSeconds: 60
-  instance:
-    leaseRenewalIntervalInSeconds: 30
   server:
     enableSelfPreservation: true
     renewalPercentThreshold: 90
+  instance:
+    prefer-ip-address: true
