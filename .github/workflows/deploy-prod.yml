@@ -11,7 +11,7 @@ jobs:
       - name: Github Release 최신 tag 받아오기
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
-        env:
+        with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: GitHub project release 업데이트
