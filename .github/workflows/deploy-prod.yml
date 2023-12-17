@@ -2,7 +2,7 @@ name: Release Github Application Version
 on:
   pull_request:
     branches:
-      - release
+      - main
 
 jobs:
   release-application:
@@ -21,7 +21,7 @@ jobs:
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
   deployment:
-    environment: develop
+    environment: prod
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
