@@ -1,29 +1,38 @@
-name: Release Github Application Version
+name: Release Tag
+
 on:
   push:
     branches:
-      - main
+      - main # main branch로 push될 때 아래 action이 실행됩니다.
 
 jobs:
-  release-application:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Github Release 최신 tag 받아오기
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
-        with:
-          github_token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+  build:
 
-      - name: GitHub project release 업데이트
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
-  deployment:
-    environment: prod
     runs-on: ubuntu-latest
+
     steps:
+
+      # 깃헙 코드 내려받기
+      - uses: actions/checkout@v2
+
+      # 태그 생성
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.5  # 가져다 쓸 auto tagging 프로그램
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # secrets.GITHUB_TOKEN 는 자동생성됨
+
+      # 릴리즈 생성
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1             # 가져다 쓸 create release 프로그램
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # secrets.GITHUB_TOKEN 는 자동생성됨
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
